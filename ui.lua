@@ -1,7 +1,9 @@
 local MacLib = {
 	Options = {},
 	Folder = "EndHub",
-	Accent = Color3.fromRGB(99, 102, 241),
+	Accent = Color3.fromRGB(168, 85, 247),
+	Glow = Color3.fromRGB(217, 70, 239),
+	Soft = Color3.fromRGB(233, 213, 255),
 	Accented = {},
 	GetService = function(service)
 		return cloneref and cloneref(game:GetService(service)) or game:GetService(service)
@@ -11,7 +13,7 @@ local MacLib = {
 local TweenService = MacLib.GetService("TweenService")
 local RunService = MacLib.GetService("RunService")
 local HttpService = MacLib.GetService("HttpService")
-local ContentProvider = MacLib.GetService("ContentProvider")
+local ContentProvider = MacLib.GeactService("ContentProvider")
 local UserInputService = MacLib.GetService("UserInputService")
 local Lighting = MacLib.GetService("Lighting")
 local Players = MacLib.GetService("Players")
@@ -104,7 +106,7 @@ function MacLib:Window(Settings)
 	local base = Instance.new("Frame")
 	base.Name = "Base"
 	base.AnchorPoint = Vector2.new(0.5, 0.5)
-	base.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	base.BackgroundColor3 = Color3.fromRGB(13, 9, 20)
 	base.BackgroundTransparency = Settings.AcrylicBlur and 0.05 or 0
 	base.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	base.BorderSizePixel = 0
@@ -124,8 +126,17 @@ function MacLib:Window(Settings)
 	baseUIStroke.Name = "BaseUIStroke"
 	baseUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	baseUIStroke.Color = Color3.fromRGB(255, 255, 255)
-	baseUIStroke.Transparency = 0.9
+	baseUIStroke.Thickness = 1.5
+	baseUIStroke.Transparency = 0.3
 	baseUIStroke.Parent = base
+
+	local baseGlow = Instance.new("UIGradient")
+	baseGlow.Name = "BaseGlow"
+	baseGlow.Color = ColorSequence.new(MacLib.Accent, MacLib.Glow)
+	baseGlow.Rotation = 45
+	baseGlow.Parent = baseUIStroke
+	Tween(baseUIStroke, TweenInfo.new(1.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Transparency = 0.7 }):Play()
+	table.insert(MacLib.Accented, function() baseGlow.Color = ColorSequence.new(MacLib.Accent, MacLib.Glow) end)
 
 	local sidebar = Instance.new("Frame")
 	sidebar.Name = "Sidebar"
@@ -405,6 +416,12 @@ function MacLib:Window(Settings)
 	title.BorderSizePixel = 0
 	title.Size = UDim2.new(1, -20, 0, 0)
 	title.Parent = titleFrame
+
+	local titleGlow = Instance.new("UIGradient")
+	titleGlow.Name = "TitleGlow"
+	titleGlow.Color = ColorSequence.new(MacLib.Soft, MacLib.Glow)
+	titleGlow.Parent = title
+	table.insert(MacLib.Accented, function() titleGlow.Color = ColorSequence.new(MacLib.Soft, MacLib.Glow) end)
 
 	local subtitle = Instance.new("TextLabel")
 	subtitle.Name = "Subtitle"
@@ -887,7 +904,7 @@ function MacLib:Window(Settings)
 	local globalSettings = Instance.new("Frame")
 	globalSettings.Name = "GlobalSettings"
 	globalSettings.AutomaticSize = Enum.AutomaticSize.XY
-	globalSettings.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+	globalSettings.BackgroundColor3 = Color3.fromRGB(13, 9, 20)
 	globalSettings.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	globalSettings.BorderSizePixel = 0
 	globalSettings.Position = UDim2.fromScale(0.298, 0.104)
@@ -1393,7 +1410,7 @@ function MacLib:Window(Settings)
 			tabSwitcher.TextSize = 14
 			tabSwitcher.AutoButtonColor = false
 			tabSwitcher.AnchorPoint = Vector2.new(0.5, 0)
-			tabSwitcher.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			tabSwitcher.BackgroundColor3 = MacLib.Accent
 			tabSwitcher.BackgroundTransparency = 1
 			tabSwitcher.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			tabSwitcher.BorderSizePixel = 0
@@ -1410,9 +1427,14 @@ function MacLib:Window(Settings)
 			local tabSwitcherUIStroke = Instance.new("UIStroke")
 			tabSwitcherUIStroke.Name = "TabSwitcherUIStroke"
 			tabSwitcherUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-			tabSwitcherUIStroke.Color = Color3.fromRGB(255, 255, 255)
+			tabSwitcherUIStroke.Color = MacLib.Glow
+			tabSwitcherUIStroke.Thickness = 1.5
 			tabSwitcherUIStroke.Transparency = 1
 			tabSwitcherUIStroke.Parent = tabSwitcher
+			table.insert(MacLib.Accented, function()
+				tabSwitcher.BackgroundColor3 = MacLib.Accent
+				tabSwitcherUIStroke.Color = MacLib.Glow
+			end)
 
 			local tabSwitcherUIListLayout = Instance.new("UIListLayout")
 			tabSwitcherUIListLayout.Name = "TabSwitcherUIListLayout"
@@ -1561,8 +1583,8 @@ function MacLib:Window(Settings)
 				local section = Instance.new("Frame")
 				section.Name = "Section"
 				section.AutomaticSize = Enum.AutomaticSize.Y
-				section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				section.BackgroundTransparency = 0.98
+				section.BackgroundColor3 = MacLib.Accent
+				section.BackgroundTransparency = 0.965
 				section.BorderColor3 = Color3.fromRGB(0, 0, 0)
 				section.BorderSizePixel = 0
 				section.Position = UDim2.fromScale(0, 6.78e-08)
@@ -1577,9 +1599,13 @@ function MacLib:Window(Settings)
 				local sectionUIStroke = Instance.new("UIStroke")
 				sectionUIStroke.Name = "SectionUIStroke"
 				sectionUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-				sectionUIStroke.Color = Color3.fromRGB(255, 255, 255)
-				sectionUIStroke.Transparency = 0.95
+				sectionUIStroke.Color = MacLib.Accent
+				sectionUIStroke.Transparency = 0.8
 				sectionUIStroke.Parent = section
+				table.insert(MacLib.Accented, function()
+					section.BackgroundColor3 = MacLib.Accent
+					sectionUIStroke.Color = MacLib.Accent
+				end)
 
 				local sectionUIListLayout = Instance.new("UIListLayout")
 				sectionUIListLayout.Name = "SectionUIListLayout"
@@ -1761,6 +1787,19 @@ function MacLib:Window(Settings)
 
 					toggle1.Parent = toggle
 
+					local toggleCorner = Instance.new("UICorner")
+					toggleCorner.Name = "ToggleCorner"
+					toggleCorner.CornerRadius = UDim.new(1, 0)
+					toggleCorner.Parent = toggle1
+
+					local toggleGlow = Instance.new("UIStroke")
+					toggleGlow.Name = "ToggleGlow"
+					toggleGlow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+					toggleGlow.Color = MacLib.Glow
+					toggleGlow.Thickness = 1.5
+					toggleGlow.Transparency = 1
+					toggleGlow.Parent = toggle1
+
 					local toggle1Transparency = {Enabled = 0, Disabled = 0.5}
 					local togglerHeadTransparency = {Enabled = 0, Disabled = 0.85}
 
@@ -1773,7 +1812,11 @@ function MacLib:Window(Settings)
 
 					local togglebool = ToggleFunctions.Settings.Default
 					table.insert(MacLib.Accented, function()
-						if togglebool then toggle1.ImageColor3 = MacLib.Accent end
+						toggleGlow.Color = MacLib.Glow
+						if togglebool then
+							toggle1.ImageColor3 = MacLib.Accent
+							toggleName.TextColor3 = MacLib.Soft
+						end
 					end)
 
 					local function NewState(State, callback)
@@ -1788,6 +1831,15 @@ function MacLib:Window(Settings)
 
 						Tween(togglerHead, TweenSettings.Info, {
 							ImageTransparency = transparencyValues[2]
+						}):Play()
+
+						Tween(toggleGlow, TweenSettings.Info, {
+							Transparency = State and 0.2 or 1
+						}):Play()
+
+						Tween(toggleName, TweenSettings.Info, {
+							TextTransparency = State and 0.1 or 0.5,
+							TextColor3 = State and MacLib.Soft or Color3.fromRGB(255, 255, 255)
 						}):Play()
 
 						Tween(togglerHead, TweenSettings.Info, {
@@ -1921,7 +1973,7 @@ function MacLib:Window(Settings)
 					local sliderBar = Instance.new("ImageLabel")
 					sliderBar.Name = "SliderBar"
 					sliderBar.Image = assets.sliderbar
-					sliderBar.ImageColor3 = Color3.fromRGB(87, 86, 86)
+					sliderBar.ImageColor3 = Color3.fromRGB(70, 52, 100)
 					sliderBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 					sliderBar.BackgroundTransparency = 1
 					sliderBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -1942,6 +1994,19 @@ function MacLib:Window(Settings)
 					sliderHead.Position = UDim2.fromScale(1, 0.5)
 					sliderHead.Size = UDim2.fromOffset(12, 12)
 					sliderHead.Parent = sliderBar
+
+					local sliderHeadCorner = Instance.new("UICorner")
+					sliderHeadCorner.CornerRadius = UDim.new(1, 0)
+					sliderHeadCorner.Parent = sliderHead
+
+					local sliderGlow = Instance.new("UIStroke")
+					sliderGlow.Name = "SliderGlow"
+					sliderGlow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+					sliderGlow.Color = MacLib.Glow
+					sliderGlow.Thickness = 2
+					sliderGlow.Transparency = 0.35
+					sliderGlow.Parent = sliderHead
+					table.insert(MacLib.Accented, function() sliderGlow.Color = MacLib.Glow end)
 
 					sliderBar.Parent = sliderElements
 
@@ -2675,7 +2740,8 @@ function MacLib:Window(Settings)
 											Size = UDim2.new(opt.Checkmark.Size.X.Scale, tweensettings.checkSizeDecrease, opt.Checkmark.Size.Y.Scale, opt.Checkmark.Size.Y.Offset)
 										}):Play()
 										Tween(opt.NameLabel, TweenInfo.new(tweensettings.duration, tweensettings.easingStyle), {
-											TextTransparency = tweensettings.transparencyOut
+											TextTransparency = tweensettings.transparencyOut,
+											TextColor3 = Color3.fromRGB(255, 255, 255)
 										}):Play()
 										opt.Checkmark.TextTransparency = 1
 									end
@@ -2687,7 +2753,8 @@ function MacLib:Window(Settings)
 								Size = UDim2.new(checkmark.Size.X.Scale, tweensettings.checkSizeIncrease, checkmark.Size.Y.Scale, checkmark.Size.Y.Offset)
 							}):Play()
 							Tween(optionNameLabel, TweenInfo.new(tweensettings.duration, tweensettings.easingStyle), {
-								TextTransparency = tweensettings.transparencyIn
+								TextTransparency = 0.05,
+								TextColor3 = MacLib.Soft
 							}):Play()
 							checkmark.TextTransparency = 0
 						else
@@ -2703,7 +2770,8 @@ function MacLib:Window(Settings)
 								Size = UDim2.new(checkmark.Size.X.Scale, tweensettings.checkSizeDecrease, checkmark.Size.Y.Scale, checkmark.Size.Y.Offset)
 							}):Play()
 							Tween(optionNameLabel, TweenInfo.new(tweensettings.duration, tweensettings.easingStyle), {
-								TextTransparency = tweensettings.transparencyOut
+								TextTransparency = tweensettings.transparencyOut,
+								TextColor3 = Color3.fromRGB(255, 255, 255)
 							}):Play()
 							checkmark.TextTransparency = 1
 						end
@@ -2806,7 +2874,7 @@ function MacLib:Window(Settings)
 						checkmark.Name = "Checkmark"
 						checkmark.FontFace = Font.new(assets.interFont)
 						checkmark.Text = "✓"
-						checkmark.TextColor3 = Color3.fromRGB(255, 255, 255)
+						checkmark.TextColor3 = MacLib.Glow
 						checkmark.TextSize = 13
 						checkmark.TextTransparency = 1
 						checkmark.TextXAlignment = Enum.TextXAlignment.Left
@@ -2821,6 +2889,7 @@ function MacLib:Window(Settings)
 						checkmark.Position = UDim2.fromScale(1.3e-07, 0.5)
 						checkmark.Size = UDim2.fromOffset(-10, 0)
 						checkmark.Parent = option
+						table.insert(MacLib.Accented, function() checkmark.TextColor3 = MacLib.Glow end)
 
 						option.Parent = dropdownFrame
 
@@ -3126,7 +3195,7 @@ function MacLib:Window(Settings)
 					prompt.Name = "Prompt"
 					prompt.AnchorPoint = Vector2.new(0.5, 0.5)
 					prompt.AutomaticSize = Enum.AutomaticSize.Y
-					prompt.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+					prompt.BackgroundColor3 = Color3.fromRGB(13, 9, 20)
 					prompt.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					prompt.BorderSizePixel = 0
 					prompt.Position = UDim2.fromScale(0.5, 0.5)
@@ -3833,7 +3902,7 @@ function MacLib:Window(Settings)
 					confirm.TextTruncate = Enum.TextTruncate.AtEnd
 					confirm.AutoButtonColor = false
 					confirm.AutomaticSize = Enum.AutomaticSize.Y
-					confirm.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+					confirm.BackgroundColor3 = Color3.fromRGB(30, 21, 46)
 					confirm.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					confirm.BorderSizePixel = 0
 					confirm.Size = UDim2.fromScale(1, 0)
@@ -3867,7 +3936,7 @@ function MacLib:Window(Settings)
 					cancel.TextTruncate = Enum.TextTruncate.AtEnd
 					cancel.AutoButtonColor = false
 					cancel.AutomaticSize = Enum.AutomaticSize.Y
-					cancel.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+					cancel.BackgroundColor3 = Color3.fromRGB(30, 21, 46)
 					cancel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 					cancel.BorderSizePixel = 0
 					cancel.Size = UDim2.fromScale(1, 0)
@@ -4329,14 +4398,15 @@ function MacLib:Window(Settings)
 					headerText.Name = "HeaderText"
 					headerText.FontFace = Font.new(
 						assets.interFont,
-						Enum.FontWeight.Medium,
+						Enum.FontWeight.Bold,
 						Enum.FontStyle.Normal
 					)
 					headerText.RichText = true
 					headerText.Text = HeaderFunctions.Settings.Text or HeaderFunctions.Settings.Name
-					headerText.TextColor3 = Color3.fromRGB(255, 255, 255)
+					headerText.TextColor3 = MacLib.Soft
 					headerText.TextSize = 16
-					headerText.TextTransparency = 0.3
+					headerText.TextTransparency = 0.05
+					table.insert(MacLib.Accented, function() headerText.TextColor3 = MacLib.Soft end)
 					headerText.TextWrapped = true
 					headerText.TextXAlignment = Enum.TextXAlignment.Left
 					headerText.AutomaticSize = Enum.AutomaticSize.Y
@@ -4604,22 +4674,24 @@ function MacLib:Window(Settings)
 
 				for i, tabInfo in pairs(tabs) do
 					Tween(i, TweenInfo.new(easetime, Enum.EasingStyle.Sine), {
-						BackgroundTransparency = (i == tabSwitcher and 0.98 or 1)
+						BackgroundTransparency = (i == tabSwitcher and 0.82 or 1)
 					}):Play()
 
 					if tabInfo.tabStroke then
 						Tween(tabInfo.tabStroke, TweenInfo.new(easetime, Enum.EasingStyle.Sine), {
-							Transparency = (i == tabSwitcher and 0.95 or 1)
+							Transparency = (i == tabSwitcher and 0.25 or 1)
 						}):Play()
 					end
 					if tabInfo.switcherImage then
 						Tween(tabInfo.switcherImage, TweenInfo.new(easetime, Enum.EasingStyle.Sine), {
-							ImageTransparency = (i == tabSwitcher and 0.1 or 0.5)
+							ImageTransparency = (i == tabSwitcher and 0 or 0.5),
+							ImageColor3 = (i == tabSwitcher and MacLib.Glow or Color3.fromRGB(255, 255, 255))
 						}):Play()
 					end
 					if tabInfo.switcherName then
 						Tween(tabInfo.switcherName, TweenInfo.new(easetime, Enum.EasingStyle.Sine), {
-							TextTransparency = (i == tabSwitcher and 0.1 or 0.5)
+							TextTransparency = (i == tabSwitcher and 0 or 0.5),
+							TextColor3 = (i == tabSwitcher and MacLib.Soft or Color3.fromRGB(255, 255, 255))
 						}):Play()
 					end
 				end
@@ -4785,7 +4857,7 @@ function MacLib:Window(Settings)
 		notification.Name = "Notification"
 		notification.AnchorPoint = Vector2.new(0.5, 0.5)
 		notification.AutomaticSize = Enum.AutomaticSize.Y
-		notification.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+		notification.BackgroundColor3 = Color3.fromRGB(13, 9, 20)
 		notification.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		notification.BorderSizePixel = 0
 		notification.Position = UDim2.fromScale(0.5, 0.5)
@@ -4796,8 +4868,9 @@ function MacLib:Window(Settings)
 		local notificationUIStroke = Instance.new("UIStroke")
 		notificationUIStroke.Name = "NotificationUIStroke"
 		notificationUIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-		notificationUIStroke.Color = Color3.fromRGB(255, 255, 255)
-		notificationUIStroke.Transparency = 0.9
+		notificationUIStroke.Color = MacLib.Glow
+		notificationUIStroke.Thickness = 1.5
+		notificationUIStroke.Transparency = 0.35
 		notificationUIStroke.Parent = notification
 
 		local notificationUICorner = Instance.new("UICorner")
@@ -5020,7 +5093,7 @@ function MacLib:Window(Settings)
 		prompt.Name = "Prompt"
 		prompt.AnchorPoint = Vector2.new(0.5, 0.5)
 		prompt.AutomaticSize = Enum.AutomaticSize.Y
-		prompt.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+		prompt.BackgroundColor3 = Color3.fromRGB(13, 9, 20)
 		prompt.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		prompt.BorderSizePixel = 0
 		prompt.Position = UDim2.fromScale(0.5, 0.5)
@@ -5172,7 +5245,7 @@ function MacLib:Window(Settings)
 			button.TextTruncate = Enum.TextTruncate.AtEnd
 			button.AutoButtonColor = false
 			button.AutomaticSize = Enum.AutomaticSize.Y
-			button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			button.BackgroundColor3 = Color3.fromRGB(30, 21, 46)
 			button.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			button.BorderSizePixel = 0
 			button.Size = UDim2.fromScale(1, 0)
@@ -5513,9 +5586,11 @@ function MacLib:Window(Settings)
 		end
 	end
 
-	function MacLib:SetAccent(color)
+	function MacLib:SetAccent(color, glow)
 		if typeof(color) ~= "Color3" then return end
 		MacLib.Accent = color
+		MacLib.Glow = typeof(glow) == "Color3" and glow or color:Lerp(Color3.fromRGB(255, 120, 255), 0.35)
+		MacLib.Soft = color:Lerp(Color3.fromRGB(255, 255, 255), 0.75)
 		for _, apply in ipairs(MacLib.Accented) do
 			pcall(apply)
 		end
